@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { promisify } from 'node:util'
 
 import { buildGatedIndex, formatHealth, formatMeta, formatQuarantine, parseApprovals, parseYanked } from './gate.mjs'
-import { formatCatalogue, listRemoteVersions, parseIndex, readEntries } from './lib.mjs'
+import { formatCatalogue, formatPackageList, listRemoteVersions, parseIndex, readEntries } from './lib.mjs'
 import { ROOT, loadPolicy } from './policy.mjs'
 import { compileCheck, scanPackage } from './scan.mjs'
 
@@ -89,6 +89,7 @@ try {
   await writeFile(join(outputDirectory, 'index.txt'), built.indexText)
   await writeFile(join(outputDirectory, 'index.txt.sha256'), built.indexChecksum)
   await writeFile(join(outputDirectory, 'packages.json'), formatCatalogue(built.packages))
+  await writeFile(join(outputDirectory, 'packages.txt'), formatPackageList(built.packages))
   await writeFile(join(outputDirectory, 'quarantine.json'), formatQuarantine(built.quarantine))
   await writeFile(join(outputDirectory, 'health.json'), formatHealth(built.health))
   await writeFile(join(outputDirectory, 'meta.json'), formatMeta(built.meta))

@@ -201,3 +201,38 @@ export function formatCatalogue(packages) {
   }))
   return `${JSON.stringify(catalogue, null, 2)}\n`
 }
+
+export const PACKAGE_LIST_HEADER = 'nook-catalogue 1'
+const MAXIMUM_LIST_DESCRIPTION = 200
+
+function isListControl(code) {
+  return (
+    code < 0x20 ||
+    (code >= 0x7f && code <= 0x9f) ||
+    code === 0x061c ||
+    (code >= 0x200b && code <= 0x200f) ||
+    code === 0x2028 ||
+    code === 0x2029 ||
+    (code >= 0x202a && code <= 0x202e) ||
+    code === 0x2060 ||
+    (code >= 0x2066 && code <= 0x2069) ||
+    code === 0xfeff
+  )
+}
+
+export function cleanListText(text, limit = MAXIMUM_LIST_DESCRIPTION) {
+  const replaced = [...String(text)].map((character) => (isListControl(character.codePointAt(0)) ? ' ' : character)).join('')
+  return [...replaced.replace(/ +/g, ' ').trim()].slice(0, limit).join('').trim()
+}
+
+export function formatPackageList(packages) {
+  const lines = [PACKAGE_LIST_HEADER]
+  const published = packages
+    .filter((entry) => entry.versions.some((version) => !version.yanked))
+    .sort((left, right) => (left.name < right.name ? -1 : left.name > right.name ? 1 : 0))
+  for (const entry of published) {
+    const license = entry.license === undefined ? '' : cleanListText(entry.license)
+    lines.push(`${entry.name}\t${license === '' ? '-' : license}\t${cleanListText(entry.description ?? '')}`)
+  }
+  return `${lines.join('\n')}\n`
+}
