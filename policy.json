@@ -69,7 +69,10 @@
   "allowedHosts": [
     "github.com",
     "raw.githubusercontent.com",
-    "sarlin-lang.org"
+    "sarlin-lang.org",
+    "www.w3.org",
+    "purl.org",
+    "creativecommons.org"
   ],
   "maximumLineLength": 2000,
   "maximumEncodedBlobLength": 400,

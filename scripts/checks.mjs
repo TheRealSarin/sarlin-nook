@@ -382,7 +382,7 @@ export function checkSensitiveStrings(files, policy) {
     }
   }
   for (const file of files) {
-    if (!file.path.endsWith('.sar') || file.text === null) continue
+    if (!isSourcePath(file.path) || file.text === null) continue
     const { strings, externals } = analyzeSource(file.text)
     for (const item of strings) scan(file.path, item.line, item.value)
     for (const block of externals) for (const entry of block.body) scan(file.path, entry.line, entry.text)
@@ -408,7 +408,10 @@ export function checkObfuscation(files, policy) {
       const { strings } = analyzeSource(file.text)
       const total = strings.reduce((sum, item) => sum + item.value.length, 0)
       const escapes = /\\(?:x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|[0-7]{3})/g
-      const escaped = strings.reduce((sum, item) => sum + (item.value.match(escapes) ?? []).length * 4, 0)
+      const escaped = strings.reduce(
+        (sum, item) => sum + (item.value.match(escapes) ?? []).reduce((inner, match) => inner + match.length, 0),
+        0,
+      )
       if (total > 200 && escaped / total > policy.maximumEscapedRatio) {
         findings.push(finding('escaped-ratio', `${file.path} is mostly escape sequences inside string literals`))
       }
@@ -646,4 +649,18 @@ export function parseCollisionOutput(output, label) {
     lines.push({ name: match[1], labels: labels.filter((item) => item !== label) })
   }
   return lines
+}
+
+export function sanitize(text, limit = 300) {
+  const cleaned = [...String(text)]
+    .map((character) => {
+      const code = character.charCodeAt(0)
+      if (code < 0x20 || code > 0x7e) return ' '
+      if ('<>|`@\\'.includes(character)) return ' '
+      return character
+    })
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return cleaned.length > limit ? `${cleaned.slice(0, limit)}...` : cleaned
 }
