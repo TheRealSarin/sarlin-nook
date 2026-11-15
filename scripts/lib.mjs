@@ -195,6 +195,8 @@ export function formatCatalogue(packages) {
     description: entry.description,
     license: entry.license ?? null,
     repository: entry.repository,
+    compatible: entry.compatible ?? null,
+    compiler: entry.compiler ?? null,
     versions: entry.versions,
   }))
   return `${JSON.stringify(catalogue, null, 2)}\n`

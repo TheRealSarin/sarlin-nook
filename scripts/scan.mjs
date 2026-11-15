@@ -425,6 +425,14 @@ async function scanInScratch({ entry, version, commit, sarlinPath, policy, liste
     if (history.signed) findings.push(finding('signed', 'the commit or tag carries a signature'))
   }
 
+  let breaksDependents = []
+  if (mode === 'full' && packageRead) {
+    const { dependentsImpact } = await import('./dependents.mjs')
+    const impact = await dependentsImpact({ entry, version, commit, listedPackages, sarlinPath, policy, environment, scratch })
+    findings.push(...impact.findings)
+    breaksDependents = impact.breaks.map((item) => item.name)
+  }
+
   let previous = previousScan
   if (mode === 'full' && !previous && previousPublished && packageRead) {
     previous = await scanPackage({
@@ -455,6 +463,7 @@ async function scanInScratch({ entry, version, commit, sarlinPath, policy, liste
     lines: statistics.lines,
     dependencies: requires,
     incompatibleWith: cross.incompatibleWith,
+    breaksDependents,
     signed: history?.signed ?? false,
     commitDate: history?.commitDate ?? null,
     scanned: packageRead,
@@ -483,4 +492,22 @@ export function newVersions(entry, remote, previous) {
   return [...remote]
     .filter(([version]) => !pinned.has(version))
     .map(([version, commit]) => ({ version, commit }))
+}
+
+export async function compileCheck({ entry, version, commit, listedPackages, sarlinPath, policy, workDir }) {
+  const scratch = await mkdtemp(join(workDir, 'health-'))
+  try {
+    const home = join(scratch, 'home')
+    const nook = join(scratch, 'nook')
+    await createNook(nook, indexLines(listedPackages, [{ name: entry.name, version, repository: entry.repository, commit }]))
+    const project = join(scratch, 'project')
+    await mkdir(join(project, 'source'), { recursive: true })
+    await writeFile(join(project, 'sarlin.project'), `name: nook_health\nentry: source/main.sar\nlanguage: 1\nrequire: ${entry.name} ${version}\n`)
+    await writeFile(join(project, 'source', 'main.sar'), 'func main() {\n}\n')
+    const env = { ...gitEnvironment({ HOME: scratch, SARLIN_NOOK_HOME: home }), SARLIN_NOOK_INDEX: nook }
+    const check = await runSarlin(sarlinPath, ['check', project], { cwd: scratch, env, policy })
+    return { ok: check.code === 0 && !check.timedOut, output: check.output, timedOut: check.timedOut }
+  } finally {
+    await rm(scratch, { recursive: true, force: true })
+  }
 }
