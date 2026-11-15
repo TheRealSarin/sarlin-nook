@@ -4,6 +4,8 @@
     "description": "CSV tables with named columns, header and row validation, and file helpers for Sarlin",
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-csv",
+    "compatible": true,
+    "compiler": "0.1.4",
     "versions": [
       {
         "version": "0.1.1",
@@ -20,6 +22,8 @@
     "description": "Build SVG artwork in Sarlin with embedded copyright and attribution metadata",
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-svg",
+    "compatible": true,
+    "compiler": "0.1.4",
     "versions": [
       {
         "version": "0.1.0",

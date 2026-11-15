@@ -1,0 +1,3 @@
+nook-catalogue 1
+csv	MIT	CSV tables with named columns, header and row validation, and file helpers for Sarlin
+svg	MIT	Build SVG artwork in Sarlin with embedded copyright and attribution metadata
