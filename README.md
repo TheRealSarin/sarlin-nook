@@ -190,3 +190,4 @@ npm run build-index -- --sarlin /path/to/sarlin
 ## License
 
 The Nook's scripts and package list are available under your choice of the [MIT License](LICENSE-MIT) or the [Apache License 2.0](LICENSE-APACHE): `MIT OR Apache-2.0`. Each listed package has its own license.
+
