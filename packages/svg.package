@@ -1,0 +1,4 @@
+name: svg
+repository: https://github.com/TheRealSarin/sarlin-svg
+description: Build SVG artwork in Sarlin with embedded copyright and attribution metadata
+license: MIT
