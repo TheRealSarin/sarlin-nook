@@ -1,0 +1,11 @@
+{
+  "name": "sarlin-nook",
+  "private": true,
+  "type": "module",
+  "license": "MIT OR Apache-2.0",
+  "scripts": {
+    "test": "node --test tests/",
+    "validate": "node scripts/validate.mjs",
+    "build-index": "node scripts/build-index.mjs"
+  }
+}

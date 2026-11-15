@@ -1,0 +1,61 @@
+name: Publish the package index
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-index
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build and publish the index
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the package list
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch the published index
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p previous
+          if git fetch --depth 1 origin index:refs/remotes/origin/index 2>/dev/null; then
+            git show origin/index:index.txt > previous/index.txt
+          fi
+
+      - name: Build the index
+        run: node scripts/build-index.mjs --previous previous/index.txt --output out
+
+      - name: Publish to the index branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git rev-parse --verify --quiet origin/index >/dev/null; then
+            git worktree add --detach publish origin/index
+          else
+            git worktree add --orphan -b index publish
+          fi
+          cp out/index.txt out/packages.json publish/
+          cd publish
+          git add index.txt packages.json
+          if git diff --cached --quiet; then
+            echo "The published index is already current"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit --message "Update the package index from ${GITHUB_SHA::7}"
+          git push origin HEAD:index

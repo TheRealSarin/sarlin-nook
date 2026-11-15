@@ -1,0 +1,31 @@
+name: Validate packages
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Test the scripts and check every package entry
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the package list
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test the index scripts
+        run: npm test
+
+      - name: Check every package entry
+        run: npm run validate
