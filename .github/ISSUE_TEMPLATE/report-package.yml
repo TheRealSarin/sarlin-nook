@@ -1,0 +1,34 @@
+name: Report a malicious or broken package
+description: Report a package or version that is harmful, broken or violates the policy
+labels: [needs-manual-review]
+body:
+  - type: markdown
+    attributes:
+      value: For a suspected security problem with a package, read SECURITY.md first. Do not paste secrets or exploit details in a public issue.
+  - type: input
+    id: package
+    attributes:
+      label: Package and version
+      placeholder: acras 0.3.0
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong
+      options:
+        - Malicious or harmful code
+        - Leaked secret
+        - License violation
+        - Copy of someone else's package
+        - Broken with the current compiler
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Where in the package did you see it, and what does it do
+    validations:
+      required: true
