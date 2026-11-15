@@ -1,0 +1,477 @@
+{
+  "trustedUsers": [
+    "TheRealSarin"
+  ],
+  "minimumAccountAgeDays": 90,
+  "minimumRepositoryAgeDays": 7,
+  "minimumPriorMergedPullRequests": 1,
+  "maximumPackageBytes": 2097152,
+  "maximumFileCount": 400,
+  "maximumBinaryBytes": 262144,
+  "allowedBinaryExtensions": [
+    "png",
+    "jpg",
+    "jpeg",
+    "gif",
+    "webp",
+    "ico",
+    "bmp",
+    "ttf",
+    "otf",
+    "woff",
+    "woff2"
+  ],
+  "reservedNames": [
+    "sarlin",
+    "sarlin_lang",
+    "std",
+    "stdlib",
+    "core",
+    "nook",
+    "nest",
+    "acras",
+    "test",
+    "example",
+    "main",
+    "lib",
+    "json",
+    "time",
+    "file",
+    "path",
+    "network",
+    "string",
+    "array",
+    "dictionary",
+    "internet"
+  ],
+  "typosquatDistance": 2,
+  "allowedLicenses": [
+    "MIT",
+    "Apache-2.0",
+    "MIT OR Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "MPL-2.0",
+    "Unlicense",
+    "0BSD",
+    "Zlib"
+  ],
+  "reviewCapabilities": [
+    "network",
+    "foreign_code"
+  ],
+  "supportedLanguages": [
+    1
+  ],
+  "sarlinTimeoutSeconds": 60,
+  "sarlinOutputCapBytes": 262144,
+  "allowedHosts": [
+    "github.com",
+    "raw.githubusercontent.com",
+    "sarlin-lang.org"
+  ],
+  "maximumLineLength": 2000,
+  "maximumEncodedBlobLength": 400,
+  "maximumEscapedRatio": 0.3,
+  "growthFactor": 5,
+  "growthMinimumBytes": 204800,
+  "growthMinimumFiles": 50,
+  "maximumMajorJump": 1,
+  "maximumMinorJump": 50,
+  "cloneThreshold": 0.8,
+  "maximumDependencyDepth": 8,
+  "maximumOpenPullRequests": 3,
+  "maximumRecentListings": 3,
+  "maximumEntriesPerPullRequest": 2,
+  "unavailableDaysBeforeIssue": 7,
+  "blockedForeignPatterns": [
+    {
+      "id": "system-call",
+      "pattern": "\\bsystem\\s*\\("
+    },
+    {
+      "id": "popen-call",
+      "pattern": "\\b_?popen\\s*\\("
+    },
+    {
+      "id": "exec-call",
+      "pattern": "\\b_?exec(?:l|le|lp|lpe|v|ve|vp|vpe)?\\s*\\("
+    },
+    {
+      "id": "fork-call",
+      "pattern": "\\bfork\\s*\\("
+    },
+    {
+      "id": "dlopen-call",
+      "pattern": "\\bdlopen\\s*\\("
+    },
+    {
+      "id": "windows-process-call",
+      "pattern": "\\b(?:WinExec|CreateProcess[AW]?|ShellExecute[AW]?|LoadLibrary[AW]?)\\s*\\("
+    },
+    {
+      "id": "rust-process-command",
+      "pattern": "std::process::Command|\\bCommand::new\\b"
+    },
+    {
+      "id": "rust-unsafe",
+      "pattern": "\\bunsafe\\b"
+    },
+    {
+      "id": "absolute-include",
+      "pattern": "#\\s*include\\s*[<\"]/"
+    }
+  ],
+  "deepNativePatterns": [
+    {
+      "id": "inline-assembly",
+      "pattern": "\\b(?:asm|__asm__|__asm|asm!|global_asm!)\\b"
+    },
+    {
+      "id": "system-include",
+      "pattern": "#\\s*(?:pragma\\b|include\\s*[<\"](?:sys/|linux/|asm/))"
+    },
+    {
+      "id": "integer-function-pointer",
+      "pattern": "\\(\\s*\\w[\\w\\s*]*\\(\\s*\\*\\s*\\)\\s*\\([^)]*\\)\\s*\\)\\s*\\(?\\s*(?:0x[0-9a-fA-F]+|uintptr_t|size_t|unsigned\\s+long)"
+    },
+    {
+      "id": "executable-memory",
+      "pattern": "\\b(?:mmap|mprotect|VirtualProtect|VirtualAlloc)\\b[^;]*(?:PROT_EXEC|PAGE_EXECUTE)"
+    },
+    {
+      "id": "ptrace-call",
+      "pattern": "\\bptrace\\s*\\("
+    },
+    {
+      "id": "environment-read",
+      "pattern": "\\b(?:getenv|secure_getenv)\\s*\\(|std::env\\b|\\benviron\\b"
+    },
+    {
+      "id": "rust-filesystem",
+      "pattern": "std::fs\\b"
+    },
+    {
+      "id": "rust-network",
+      "pattern": "std::net\\b"
+    },
+    {
+      "id": "libc-call",
+      "pattern": "\\blibc::"
+    },
+    {
+      "id": "transmute",
+      "pattern": "\\btransmute\\b"
+    }
+  ],
+  "secretPatterns": [
+    {
+      "id": "private-key",
+      "pattern": "-----BEGIN (?:[A-Z]+ )?PRIVATE KEY(?: BLOCK)?-----"
+    },
+    {
+      "id": "aws-access-key",
+      "pattern": "\\b(?:AKIA|ASIA)[0-9A-Z]{16}\\b"
+    },
+    {
+      "id": "github-token",
+      "pattern": "\\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{36,}\\b|\\bgithub_pat_[A-Za-z0-9_]{22,}\\b"
+    },
+    {
+      "id": "credential-assignment",
+      "pattern": "\\b(?:password|passwd|secret|token|api_?key)\\s*[:=]\\s*[\"'][^\"'\\s]{16,}[\"']",
+      "flags": "i"
+    }
+  ],
+  "sensitivePathPatterns": [
+    {
+      "id": "ssh-keys",
+      "pattern": "\\.ssh\\b|id_rsa|id_ed25519"
+    },
+    {
+      "id": "cloud-credentials",
+      "pattern": "\\.aws\\b|\\.kube/config|\\.docker/config"
+    },
+    {
+      "id": "dotenv-file",
+      "pattern": "(?:^|[\\\\/\"'])\\.env\\b"
+    },
+    {
+      "id": "system-accounts",
+      "pattern": "/etc/(?:passwd|shadow|sudoers)"
+    },
+    {
+      "id": "browser-profile",
+      "pattern": "\\.mozilla|google-chrome|\\.config/chromium|Login Data|Application Support/(?:Google|Firefox)",
+      "flags": "i"
+    },
+    {
+      "id": "keychain",
+      "pattern": "keychain|\\.gnupg|wallet\\.dat|\\.password-store",
+      "flags": "i"
+    }
+  ],
+  "checks": {
+    "check-failed": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "main-defined": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "symlink": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "file-count": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "package-size": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "binary-file": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "bad-path": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "secret": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "no-project": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "bad-require": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "hidden-characters": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "project-language": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "no-source": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "git-folder": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "submodule": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "dependency-cycle": {
+      "enabled": true,
+      "severity": "block"
+    },
+    "external-code": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "foreign-pattern": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "native-deep": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "network": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "capability-review": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "no-license": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "license-not-allowed": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "license-mismatch": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "copyleft-license": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "collision": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "non-ascii-identifier": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "sensitive-path": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "raw-ip-url": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "unlisted-host": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "long-line": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "encoded-blob": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "escaped-ratio": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "dangerous-removal": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "project-name-mismatch": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "entry-missing": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "build-output": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "nested-project": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "possible-clone": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "dependency-depth": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "dependency-yanked": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "tag-unreachable": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "history-rewrite": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "capability-escalation": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "size-growth": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "back-dated-tag": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "back-dated-commit": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "version-jump": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "dependents-break": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "dependents-break-compatible": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "dependency-outdated": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "incompatible-with": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "collision-check-skipped": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "no-readme": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "no-tests": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "capabilities": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "statistics": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "dependencies": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "signed": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "repository-moved": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "owner-type": {
+      "enabled": true,
+      "severity": "info"
+    },
+    "too-many-open-pulls": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "listing-rate": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "too-many-entries": {
+      "enabled": true,
+      "severity": "review"
+    },
+    "repository-unavailable": {
+      "enabled": true,
+      "severity": "review"
+    }
+  }
+}
