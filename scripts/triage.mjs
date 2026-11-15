@@ -112,9 +112,12 @@ function normalisedName(name) {
   return name.replace(/_/g, '')
 }
 
-export function checkNames({ entry, listedNames, policy }) {
+export function checkNames({ entry, listedNames, policy, author = '' }) {
   const name = entry.name
-  if (policy.reservedNames.includes(name)) return result('Name safety', 'block', `'${name}' is a reserved name`)
+  if (policy.reservedNames.includes(name)) {
+    if (isTrusted(policy, author)) return result('Name safety', 'info', `'${name}' is reserved for maintainers and ${author} is a trusted user`)
+    return result('Name safety', 'block', `'${name}' is a reserved name`)
+  }
   const others = listedNames.filter((other) => other !== name)
   const same = others.find((other) => normalisedName(other) === normalisedName(name))
   if (same) return result('Name safety', 'block', `'${name}' differs from the existing package '${same}' only by punctuation`)
@@ -284,7 +287,7 @@ export async function runTriage({ api, repo, number, expectedSha, policy, deps, 
       if (owner) repoInfo = await api('GET', `repos/${owner.owner}/${owner.name}`).catch(() => null)
       rows.push(checkRepository({ entry, repo: repoInfo, policy, now }))
       rows.push(checkRepositoryIdentity({ entry, repo: repoInfo }))
-      rows.push(checkNames({ entry, listedNames, policy }))
+      rows.push(checkNames({ entry, listedNames, policy, author }))
       rows.push(checkDuplicate({ entry, listed }))
       if (repoInfo && outcome.status !== 'block') rows.push(await scanNewest({ entry, listed, deps }))
     }

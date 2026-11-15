@@ -138,6 +138,14 @@ test('name safety blocks reserved names and punctuation twins, reviews close nam
   assert.equal(run('totally_new').status, 'pass')
 })
 
+test('a trusted user may claim a reserved name and nobody else may', () => {
+  const run = (author) => checkNames({ entry: { name: 'acras' }, listedNames: [], policy, author })
+  assert.equal(run('TheRealSarin').status, 'info')
+  assert.equal(run('thereal sarin').status, 'block')
+  assert.equal(run('mallory').status, 'block')
+  assert.equal(run('').status, 'block')
+})
+
 test('duplicate repositories under another name are blocked', () => {
   const listed = [{ name: 'first', repository: 'https://github.com/o/first' }]
   assert.equal(checkDuplicate({ entry: { name: 'second', repository: 'https://github.com/O/First' }, listed }).status, 'block')
