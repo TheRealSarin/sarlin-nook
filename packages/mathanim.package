@@ -1,0 +1,4 @@
+name: mathanim
+repository: https://github.com/TheRealSarin/sarlin-mathanim
+description: Sequential SVG animations for math and explanatory scenes, built on the svg package
+license: MIT
