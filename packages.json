@@ -6,6 +6,10 @@
     "repository": "https://github.com/TheRealSarin/sarlin-csv",
     "versions": [
       {
+        "version": "0.1.1",
+        "commit": "23ddf54031b68f884bb421a61477f7c1fd81df58"
+      },
+      {
         "version": "0.1.0",
         "commit": "387ce9d23b3a10bcf2e0d1de580bf826cb582b6e"
       }
