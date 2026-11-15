@@ -1,3 +1,4 @@
 name: csv
 repository: https://github.com/TheRealSarin/sarlin-csv
 description: CSV tables with named columns, header and row validation, and file helpers for Sarlin
+license: MIT
