@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: publish-index
@@ -16,8 +17,9 @@ concurrency:
 
 jobs:
   publish:
-    name: Build and publish the index
+    name: Scan new versions and publish the index
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
       - name: Check out the package list
         uses: actions/checkout@v4
@@ -27,17 +29,31 @@ jobs:
         with:
           node-version: 22
 
-      - name: Fetch the published index
+      - name: Install the newest sarlin compiler
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/install-sarlin.sh "$RUNNER_TEMP/sarlin"
+
+      - name: Fetch the published files
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p previous
           if git fetch --depth 1 origin index:refs/remotes/origin/index 2>/dev/null; then
-            git show origin/index:index.txt > previous/index.txt
+            for file in index.txt packages.json quarantine.json health.json meta.json; do
+              git show "origin/index:$file" > "previous/$file" 2>/dev/null || rm -f "previous/$file"
+            done
           fi
 
       - name: Build the index
-        run: node scripts/build-index.mjs --previous previous/index.txt --output out
+        run: >
+          node scripts/build-index.mjs
+          --previous previous/index.txt
+          --previous-catalogue previous/packages.json
+          --previous-quarantine previous/quarantine.json
+          --previous-health previous/health.json
+          --previous-meta previous/meta.json
+          --output out
 
       - name: Publish to the index branch
         shell: bash
@@ -48,9 +64,10 @@ jobs:
           else
             git worktree add --orphan -b index publish
           fi
-          cp out/index.txt out/packages.json publish/
+          files="index.txt index.txt.sha256 packages.json packages.txt quarantine.json health.json meta.json"
+          for file in $files; do cp "out/$file" publish/; done
           cd publish
-          git add index.txt packages.json
+          git add $files
           if git diff --cached --quiet; then
             echo "The published index is already current"
             exit 0
@@ -59,3 +76,11 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit --message "Update the package index from ${GITHUB_SHA::7}"
           git push origin HEAD:index
+
+      - name: Open and close review issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          gh label create needs-manual-review --force --color fbca04 --description "A maintainer must review this before it can be merged or published"
+          node scripts/issues.mjs --output out
