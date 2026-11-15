@@ -2,22 +2,22 @@
   {
     "name": "csv",
     "version": "0.1.1",
-    "compiler": "0.1.4",
+    "compiler": "0.1.5",
     "status": "ok",
-    "checkedAt": "2026-11-15T19:59:18.342Z"
+    "checkedAt": "2026-11-15T20:19:11.516Z"
   },
   {
     "name": "mathanim",
     "version": "0.1.0",
-    "compiler": "0.1.4",
+    "compiler": "0.1.5",
     "status": "ok",
-    "checkedAt": "2026-11-15T20:03:16.756Z"
+    "checkedAt": "2026-11-15T20:19:11.516Z"
   },
   {
     "name": "svg",
     "version": "0.1.0",
-    "compiler": "0.1.4",
+    "compiler": "0.1.5",
     "status": "ok",
-    "checkedAt": "2026-11-15T19:59:18.342Z"
+    "checkedAt": "2026-11-15T20:19:11.516Z"
   }
 ]

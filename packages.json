@@ -5,7 +5,7 @@
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-csv",
     "compatible": true,
-    "compiler": "0.1.4",
+    "compiler": "0.1.5",
     "versions": [
       {
         "version": "0.1.1",
@@ -23,7 +23,7 @@
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-mathanim",
     "compatible": true,
-    "compiler": "0.1.4",
+    "compiler": "0.1.5",
     "versions": [
       {
         "version": "0.1.0",
@@ -37,7 +37,7 @@
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-svg",
     "compatible": true,
-    "compiler": "0.1.4",
+    "compiler": "0.1.5",
     "versions": [
       {
         "version": "0.1.0",
