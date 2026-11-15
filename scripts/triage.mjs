@@ -77,14 +77,14 @@ export function checkAccount({ author, user, priorMerged, association, policy, n
   return result('Author account', 'pass', facts)
 }
 
-export function checkRepository({ entry, repo, policy, now }) {
+export function checkRepository({ entry, repo, policy, now, author = '' }) {
   if (!repo) return result('Package repository', 'block', 'The repository does not exist or is not public')
   if (repo.private) return result('Package repository', 'block', 'The repository is private')
   const problems = []
   if (repo.archived) problems.push('the repository is archived')
   if (repo.fork) problems.push('the repository is a fork')
   const ageDays = Math.floor((now - new Date(repo.created_at).getTime()) / DAY)
-  if (!(ageDays >= policy.minimumRepositoryAgeDays)) problems.push(`the repository is younger than ${policy.minimumRepositoryAgeDays} days`)
+  if (!isTrusted(policy, author) && !(ageDays >= policy.minimumRepositoryAgeDays)) problems.push(`the repository is younger than ${policy.minimumRepositoryAgeDays} days`)
   const detected = repo.license?.spdx_id && repo.license.spdx_id !== 'NOASSERTION' ? repo.license.spdx_id : null
   const license = detected ?? entry.license ?? null
   if (!license) problems.push('no license was detected or stated')
@@ -285,7 +285,7 @@ export async function runTriage({ api, repo, number, expectedSha, policy, deps, 
       const owner = repositoryOwner(entry.repository)
       let repoInfo = null
       if (owner) repoInfo = await api('GET', `repos/${owner.owner}/${owner.name}`).catch(() => null)
-      rows.push(checkRepository({ entry, repo: repoInfo, policy, now }))
+      rows.push(checkRepository({ entry, repo: repoInfo, policy, now, author }))
       rows.push(checkRepositoryIdentity({ entry, repo: repoInfo }))
       rows.push(checkNames({ entry, listedNames, policy, author }))
       rows.push(checkDuplicate({ entry, listed }))

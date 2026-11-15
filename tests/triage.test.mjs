@@ -119,6 +119,15 @@ test('package repository checks existence, visibility, archive, fork, age and li
   assert.equal(check({ license: { spdx_id: 'NOASSERTION' } }, { license: undefined }).status, 'review')
 })
 
+test('a trusted user may list a brand new repository and nobody else may', () => {
+  const entry = { license: 'MIT' }
+  const repo = { private: false, archived: false, fork: false, created_at: new Date(NOW - 60000).toISOString(), license: { spdx_id: 'MIT' } }
+  assert.equal(checkRepository({ entry, repo, policy, now: NOW, author: 'TheRealSarin' }).status, 'pass')
+  assert.equal(checkRepository({ entry, repo, policy, now: NOW, author: 'mallory' }).status, 'review')
+  assert.equal(checkRepository({ entry, repo, policy, now: NOW }).status, 'review')
+  assert.equal(checkRepository({ entry, repo: { ...repo, fork: true }, policy, now: NOW, author: 'TheRealSarin' }).status, 'review')
+})
+
 test('repository identity reviews a renamed or transferred repository', () => {
   const entry = { repository: 'https://github.com/alice/widgets' }
   assert.equal(checkRepositoryIdentity({ entry, repo: { full_name: 'Alice/Widgets', owner: { type: 'Organization' } } }).status, 'info')
