@@ -26,9 +26,13 @@
     "description": "Sequential SVG animations for math and explanatory scenes, built on the svg package",
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-mathanim",
-    "compatible": false,
+    "compatible": true,
     "compiler": "0.1.6",
     "versions": [
+      {
+        "version": "0.2.0",
+        "commit": "288b18d66ce859cf72afcfa85de1acf099234d7e"
+      },
       {
         "version": "0.1.0",
         "commit": "1cc996337904a23fecfa9e0a0cc494a768b61971"

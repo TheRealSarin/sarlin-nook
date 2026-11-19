@@ -8,10 +8,10 @@
   },
   {
     "name": "mathanim",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "compiler": "0.1.6",
-    "status": "failing",
-    "checkedAt": "2026-11-19T12:52:21.408Z"
+    "status": "ok",
+    "checkedAt": "2026-11-19T12:54:36.972Z"
   },
   {
     "name": "svg",
