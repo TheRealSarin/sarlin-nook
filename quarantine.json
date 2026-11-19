@@ -1,1 +1,49 @@
-[]
+[
+  {
+    "name": "mathanim",
+    "version": "0.2.0",
+    "commit": "288b18d66ce859cf72afcfa85de1acf099234d7e",
+    "severity": "block",
+    "firstSeen": "2026-11-19T12:52:21.408Z",
+    "policyHash": "4f2342967ba749e4",
+    "findings": [
+      {
+        "id": "check-failed",
+        "severity": "block",
+        "message": "sarlin check failed: /tmp/nook-build-HWWiG7/scan-TI09kX/project: error: package 'svg' has no version '0.2.0' in the Nook (available: 0.1.0) (required by mathanim 0.2.0)"
+      },
+      {
+        "id": "bad-require",
+        "severity": "block",
+        "message": "require 'svg 0.2.0' names a version the Nook has not published"
+      },
+      {
+        "id": "collision-check-skipped",
+        "severity": "info",
+        "message": "the collision check against other listed packages could not run: error: version conflict for package 'svg': your project requires 0.1.0, but mathanim 0.2.0 requires 0.2.0"
+      },
+      {
+        "id": "dependency-outdated",
+        "severity": "info",
+        "message": "requires svg 0.2.0, but 0.1.0 is the newest"
+      },
+      {
+        "id": "capabilities",
+        "severity": "info",
+        "message": "no notable capabilities used"
+      },
+      {
+        "id": "statistics",
+        "severity": "info",
+        "message": "9 files, 27519 bytes, 204 lines of Sarlin"
+      },
+      {
+        "id": "dependencies",
+        "severity": "info",
+        "message": "requires: svg 0.2.0"
+      }
+    ],
+    "incompatibleWith": [],
+    "breaksDependents": []
+  }
+]

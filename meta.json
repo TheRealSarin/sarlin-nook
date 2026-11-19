@@ -1,8 +1,8 @@
 {
-  "generation": 2,
-  "generatedAt": "2026-11-15T20:03:16.756Z",
-  "indexSha256": "9fdf29efe266f1448eff784ef2cdcf04ae5344ab1bd0f35270cd9bb2dfc5732e",
-  "compiler": "0.1.5",
+  "generation": 3,
+  "generatedAt": "2026-11-19T12:52:21.408Z",
+  "indexSha256": "43da9cf98f83eb3e9dfabcc6e54137c6f44c016badb1879728dac57153c4a062",
+  "compiler": "0.1.6",
   "packages": 3,
-  "versions": 4
+  "versions": 6
 }

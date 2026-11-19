@@ -5,8 +5,12 @@
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-csv",
     "compatible": true,
-    "compiler": "0.1.5",
+    "compiler": "0.1.6",
     "versions": [
+      {
+        "version": "0.1.2",
+        "commit": "64a31ddc05754bd84e75b21384d4c53762dc9040"
+      },
       {
         "version": "0.1.1",
         "commit": "23ddf54031b68f884bb421a61477f7c1fd81df58"
@@ -22,8 +26,8 @@
     "description": "Sequential SVG animations for math and explanatory scenes, built on the svg package",
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-mathanim",
-    "compatible": true,
-    "compiler": "0.1.5",
+    "compatible": false,
+    "compiler": "0.1.6",
     "versions": [
       {
         "version": "0.1.0",
@@ -37,8 +41,15 @@
     "license": "MIT",
     "repository": "https://github.com/TheRealSarin/sarlin-svg",
     "compatible": true,
-    "compiler": "0.1.5",
+    "compiler": "0.1.6",
     "versions": [
+      {
+        "version": "0.2.0",
+        "commit": "ed52f416b17b133ec0e11e7fa52fde7bec9fbb80",
+        "breaksDependents": [
+          "mathanim"
+        ]
+      },
       {
         "version": "0.1.0",
         "commit": "d1210b10e168db1610d5cbec099b52af5b5e9ad7"
