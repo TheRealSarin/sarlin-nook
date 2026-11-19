@@ -128,6 +128,27 @@ test('quarantine decisions are reused until the policy or commit changes', async
   assert.notEqual(policyFingerprint(policy), policyFingerprint({ ...policy, minimumAccountAgeDays: 1 }))
 })
 
+test('a missing dependency hold is rescanned after the dependency is published', async () => {
+  const dependency = { ...entry, name: 'zbase', repository: 'https://github.com/o/zbase' }
+  const scans = []
+  const { build } = harness({
+    entries: [entry, dependency],
+    resolveVersions: async (repository) => new Map([['0.1.0', repository === entry.repository ? A : B]]),
+    scan: async ({ entry: candidate, listedPackages }) => {
+      scans.push(candidate.name)
+      const available = listedPackages.some((pkg) => pkg.name === dependency.name && pkg.versions.some(({ version }) => version === '0.1.0'))
+      return { findings: candidate === entry && !available ? [finding('block', 'bad-require')] : [] }
+    },
+  })
+  const first = await build()
+  assert.match(first.indexText, /zbase 0.1.0/)
+  assert.equal(first.quarantine[0].name, 'widgets')
+  const second = await build({ previous: parseIndex(first.indexText), previousQuarantine: first.quarantine })
+  assert.match(second.indexText, /widgets 0.1.0/)
+  assert.deepEqual(second.quarantine, [])
+  assert.deepEqual(scans, ['widgets', 'zbase', 'widgets'])
+})
+
 test('later versions are scanned against the published history only', async () => {
   const seen = []
   const { build } = harness({

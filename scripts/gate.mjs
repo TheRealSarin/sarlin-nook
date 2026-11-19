@@ -123,9 +123,16 @@ export async function buildGatedIndex({
       const record = previousQuarantine.find(
         (old) => old.name === entry.name && old.version === version && old.commit === commit && old.policyHash === fingerprint,
       )
+      const listedPackages = listed()
+      const dependencyIndexHash = createHash('sha256')
+        .update(formatIndex(listedPackages.map((pkg) => ({
+          ...pkg,
+          versions: [...pkg.versions].sort((left, right) => compareVersionsDescending(left.version, right.version)),
+        }))))
+        .digest('hex')
       let findings
       let extras
-      if (record) {
+      if (record && (!record.findings.some((finding) => finding.id === 'bad-require') || record.dependencyIndexHash === dependencyIndexHash)) {
         findings = record.findings
         extras = { incompatibleWith: record.incompatibleWith, breaksDependents: record.breaksDependents }
       } else {
@@ -137,7 +144,7 @@ export async function buildGatedIndex({
           version,
           commit,
           published: [...published].map(([v, c]) => ({ version: v, commit: c })),
-          listedPackages: listed(),
+          listedPackages,
           unavailable: unavailableVersions,
         })
         findings = result.findings
@@ -157,6 +164,7 @@ export async function buildGatedIndex({
           firstSeen: record?.firstSeen ?? now.toISOString(),
           policyHash: fingerprint,
           findings,
+          ...(findings.some((finding) => finding.id === 'bad-require') ? { dependencyIndexHash } : {}),
           ...extras,
         }
         quarantine.push(entryRecord)
