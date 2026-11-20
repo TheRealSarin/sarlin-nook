@@ -284,6 +284,10 @@
       "enabled": true,
       "severity": "review"
     },
+    "native-import": {
+      "enabled": true,
+      "severity": "review"
+    },
     "foreign-pattern": {
       "enabled": true,
       "severity": "review"

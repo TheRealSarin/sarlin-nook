@@ -11,6 +11,7 @@ import {
   checkDangerousRemovals,
   checkDependencyGraph,
   checkForeignCode,
+  checkNativeImports,
   checkHiddenCharacters,
   checkHygiene,
   checkIdentifiers,
@@ -392,6 +393,7 @@ async function scanInScratch({ entry, version, commit, sarlinPath, policy, liste
   const capabilities = collectCapabilities(sourceFiles)
   const externals = listExternals(sourceFiles)
   findings.push(...checkForeignCode(externals, capabilities, policy))
+  findings.push(...checkNativeImports(sourceFiles, files.find((file) => file.path === 'sarlin.project')?.text))
 
   const licenseFile = files.find((file) => LICENSE_FILE.test(file.path) && file.text !== null)
   if (packageRead) {

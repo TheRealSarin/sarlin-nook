@@ -10,6 +10,7 @@ import {
   checkDangerousRemovals,
   checkDependencyGraph,
   checkForeignCode,
+  checkNativeImports,
   checkHiddenCharacters,
   checkHygiene,
   checkIdentifiers,
@@ -280,4 +281,17 @@ test('collision output is parsed for the scanned package label', () => {
   const output = "warning: 'csv_parse' is defined by csv 0.1.1 (source/csv.sar:60) and by other 1.0.0 (source/o.sar:3)\nwarning: 'x' is defined by a 1.0.0 (s:1) and by b 1.0.0 (s:2)\n1 collision found.\n"
   assert.deepEqual(parseCollisionOutput(output, 'csv 0.1.1'), [{ name: 'csv_parse', labels: ['other 1.0.0'] }])
   assert.deepEqual(parseCollisionOutput(output, 'zzz 9.9.9'), [])
+})
+
+test('C header imports and native project lines need review', () => {
+  const files = sar('external C "raylib.h"\nfunc draw() {\n}\n')
+  assert.deepEqual(analyzeSource(files[0].text).imports, [{ header: 'raylib.h', line: 1 }])
+  assert.deepEqual(collectCapabilities(files), ['foreign_code'])
+  const project = 'name: game\nentry: source/main.sar\ninclude: native/include\nlink linux: m\n'
+  const result = checkNativeImports(files, project)
+  assert.deepEqual(ids(result), ['native-import'])
+  assert.match(result[0].message, /"raylib\.h" \(source\/main\.sar:1\)/)
+  assert.match(result[0].message, /include: native\/include \(sarlin\.project:3\)/)
+  assert.match(result[0].message, /link linux: m \(sarlin\.project:4\)/)
+  assert.deepEqual(checkNativeImports(sar('func draw() {\n}\n'), 'name: game\n'), [])
 })

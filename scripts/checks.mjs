@@ -18,6 +18,7 @@ const CATALOGUE = [
   ['submodule', 'block', 'the package uses git submodules'],
   ['dependency-cycle', 'block', 'the requires of the package form a cycle'],
   ['external-code', 'review', 'external C, Cpp or Rust blocks (native code compiled into the user program)'],
+  ['native-import', 'review', 'C header imports, or include and link lines in sarlin.project (native libraries in the user program)'],
   ['foreign-pattern', 'review', 'a risky native call inside an external block'],
   ['native-deep', 'review', 'assembly, executable memory, environment access, ptrace, Rust fs or net or libc inside an external block'],
   ['network', 'review', 'use of the Network built-in'],
@@ -107,6 +108,8 @@ export function compilePatterns(patterns) {
 
 const EXTERNAL_START = /^\s*external\s+(C|Cpp|Rust)\s+func\s+([A-Za-z_][A-Za-z0-9_]*)/
 const EXTERNAL_END = /^\s*end\s+external\b/
+const HEADER_IMPORT = /^\s*external\s+C\s+"([^"\n]*)"/
+const NATIVE_PROJECT_KEY = /^\s*(include|link(\s+[a-z]+)?)\s*:/
 
 export function maskSource(text) {
   let code = ''
@@ -157,6 +160,7 @@ export function maskSource(text) {
 
 export function analyzeSource(text) {
   const externals = []
+  const imports = []
   const rest = []
   let current = null
   text.split('\n').forEach((line, index) => {
@@ -171,6 +175,8 @@ export function analyzeSource(text) {
       rest.push('')
       return
     }
+    const header = HEADER_IMPORT.exec(line)
+    if (header) imports.push({ header: header[1], line: index + 1 })
     const start = EXTERNAL_START.exec(line)
     if (start) {
       current = { language: start[1], name: start[2], startLine: index + 1, endLine: index + 1, body: [] }
@@ -180,7 +186,7 @@ export function analyzeSource(text) {
     rest.push(line)
   })
   if (current) externals.push(current)
-  return { externals, ...maskSource(rest.join('\n')) }
+  return { externals, imports, ...maskSource(rest.join('\n')) }
 }
 
 function linesMatching(text, predicate) {
@@ -307,8 +313,8 @@ export function collectCapabilities(sourceFiles) {
     ['network', /\bNetwork\.[a-z_]+/],
   ]
   for (const file of sourceFiles) {
-    const { externals, code } = analyzeSource(file.text)
-    if (externals.length > 0) found.add('foreign_code')
+    const { externals, imports, code } = analyzeSource(file.text)
+    if (externals.length > 0 || imports.length > 0) found.add('foreign_code')
     for (const [name, regex] of rules) if (regex.test(code)) found.add(name)
   }
   return [...found].sort()
@@ -320,6 +326,18 @@ export function listExternals(sourceFiles) {
     for (const block of analyzeSource(file.text).externals) result.push({ ...block, path: file.path })
   }
   return result
+}
+
+export function checkNativeImports(sourceFiles, projectText) {
+  const used = []
+  for (const file of sourceFiles) {
+    for (const item of analyzeSource(file.text).imports) used.push(`"${item.header}" (${file.path}:${item.line})`)
+  }
+  ;(projectText ?? '').split('\n').forEach((line, index) => {
+    if (NATIVE_PROJECT_KEY.test(line)) used.push(`${line.trim()} (sarlin.project:${index + 1})`)
+  })
+  if (used.length === 0) return []
+  return [finding('native-import', `native C libraries reach the user's program: ${used.join(', ')}`)]
 }
 
 export function checkForeignCode(externals, capabilities, policy) {

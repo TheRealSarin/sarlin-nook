@@ -71,7 +71,7 @@ Missing labels are created on the first run. The comment is identified by the hi
 
 ## The package scan
 
-The scan gets the source through the real fetch path: a temporary local index, a temporary project that requires the package, and `sarlin check` plus `sarlin collisions`. It then reads the fetched files as data. Nothing from a package is ever executed: `sarlin check` type checks without compiling or running anything, and package tests are never run. `external C`, `external Cpp` and `external Rust` blocks and `Network.` always need a human.
+The scan gets the source through the real fetch path: a temporary local index, a temporary project that requires the package, and `sarlin check` plus `sarlin collisions`. It then reads the fetched files as data. Nothing from a package is ever executed: `sarlin check` type checks without compiling or running anything, and package tests are never run. `external C`, `external Cpp` and `external Rust` blocks, C header imports (`external C "header.h"`), `include` and `link` lines in `sarlin.project`, and `Network.` always need a human. Reading a header that the package imports runs clang's preprocessor over it, but nothing is compiled or linked.
 
 Every `sarlin` call has a timeout (`sarlinTimeoutSeconds`) and an output cap; a timeout is a block.
 
@@ -98,6 +98,7 @@ Every check has an id, a default severity and an entry under `checks` in `policy
 | `submodule` | the package uses git submodules | block |
 | `dependency-cycle` | the requires of the package form a cycle | block |
 | `external-code` | external C, Cpp or Rust blocks (native code compiled into the user program) | review |
+| `native-import` | C header imports, or include and link lines in sarlin.project (native libraries in the user program) | review |
 | `foreign-pattern` | a risky native call inside an external block | review |
 | `native-deep` | assembly, executable memory, environment access, ptrace, Rust fs or net or libc inside an external block | review |
 | `network` | use of the Network built-in | review |
