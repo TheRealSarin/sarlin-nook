@@ -18,7 +18,7 @@ const CATALOGUE = [
   ['submodule', 'block', 'the package uses git submodules'],
   ['dependency-cycle', 'block', 'the requires of the package form a cycle'],
   ['external-code', 'review', 'external C, Cpp or Rust blocks (native code compiled into the user program)'],
-  ['native-import', 'review', 'C header imports, or include, link, native and define lines in sarlin.project (native libraries in the user program)'],
+  ['native-import', 'review', 'C header imports, or include, link, native and macro lines in sarlin.project (native libraries in the user program)'],
   ['foreign-pattern', 'review', 'a risky native call inside an external block'],
   ['native-deep', 'review', 'assembly, executable memory, environment access, ptrace, Rust fs or net or libc inside an external block'],
   ['network', 'review', 'use of the Network built-in'],
@@ -109,7 +109,7 @@ export function compilePatterns(patterns) {
 const EXTERNAL_START = /^\s*external\s+(C|Cpp|Rust)\s+func\s+([A-Za-z_][A-Za-z0-9_]*)/
 const EXTERNAL_END = /^\s*end\s+external\b/
 const HEADER_IMPORT = /^\s*external\s+C\s+"([^"\n]*)"/
-const NATIVE_PROJECT_KEY = /^\s*(include|(link|native|define)(\s+[a-z]+)?)\s*:/
+const NATIVE_PROJECT_KEY = /^\s*(include|(link|native|macro)(\s+[a-z]+)?)\s*:/
 
 export function maskSource(text) {
   let code = ''
