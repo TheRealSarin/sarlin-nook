@@ -287,11 +287,12 @@ test('C header imports and native project lines need review', () => {
   const files = sar('external C "raylib.h"\nfunc draw() {\n}\n')
   assert.deepEqual(analyzeSource(files[0].text).imports, [{ header: 'raylib.h', line: 1 }])
   assert.deepEqual(collectCapabilities(files), ['foreign_code'])
-  const project = 'name: game\nentry: source/main.sar\ninclude: native/include\nlink linux: m\n'
+  const project = 'name: game\nentry: source/main.sar\ninclude: native/include\nlink linux: m\nnative: native/src/*.c\n'
   const result = checkNativeImports(files, project)
   assert.deepEqual(ids(result), ['native-import'])
   assert.match(result[0].message, /"raylib\.h" \(source\/main\.sar:1\)/)
   assert.match(result[0].message, /include: native\/include \(sarlin\.project:3\)/)
   assert.match(result[0].message, /link linux: m \(sarlin\.project:4\)/)
+  assert.match(result[0].message, /native: native\/src\/\*\.c \(sarlin\.project:5\)/)
   assert.deepEqual(checkNativeImports(sar('func draw() {\n}\n'), 'name: game\n'), [])
 })
