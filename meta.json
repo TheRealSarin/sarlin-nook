@@ -2,7 +2,7 @@
   "generation": 4,
   "generatedAt": "2026-11-19T12:54:36.972Z",
   "indexSha256": "29b15c42f193e14dad08fa8764051a10598f3e5f5516a2b258644df9b682e51c",
-  "compiler": "0.1.6",
+  "compiler": "0.1.7",
   "packages": 3,
   "versions": 7
 }
